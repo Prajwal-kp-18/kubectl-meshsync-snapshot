@@ -6,6 +6,9 @@
 *.dylib
 kubectl-meshsync_snapshot
 
+# Distribution folder
+dist/
+
 # Test binary, built with `go test -c`
 *.test
 

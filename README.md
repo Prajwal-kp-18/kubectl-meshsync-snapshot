@@ -2,6 +2,8 @@
 
 A kubectl plugin for capturing MeshSync snapshots for Meshery.
 
+> **Note for Contributors**: After pushing this code to GitHub (https://github.com/Prajwal-kp-18/kubectl-meshsync-snapshot), create a release by tagging with `git tag -a v0.1.0 -m "Initial release"` and pushing the tag with `git push origin v0.1.0`. GitHub Actions will automatically build and release the binaries.
+
 ## Overview
 
 `kubectl-meshsync-snapshot` is a kubectl plugin that helps manage MeshSync snapshots for Meshery. It allows deploying MeshSync temporarily, capturing cluster state, importing snapshots to Meshery, and cleaning up resources.
