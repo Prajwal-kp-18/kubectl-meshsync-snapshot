@@ -17,19 +17,32 @@ func TestNewClient(t *testing.T) {
 	}
 	defer os.Remove(tmpKubeconfig.Name())
 	
-	// Write invalid but parseable kubeconfig content
-	_, err = tmpKubeconfig.WriteString(`
+	// Write valid kubeconfig content for testing
+	testKubeconfigContent := `
 apiVersion: v1
 kind: Config
-clusters: []
-users: []
-contexts: []
-current-context: ""
-`)
-	if err != nil {
+clusters:
+- cluster:
+    server: https://example.com:6443
+    insecure-skip-tls-verify: true
+  name: test-cluster
+contexts:
+- context:
+    cluster: test-cluster
+    user: test-user
+  name: test-context
+current-context: test-context
+users:
+- name: test-user
+  user:
+    token: test-token
+`
+	if _, err := tmpKubeconfig.WriteString(testKubeconfigContent); err != nil {
 		t.Fatalf("Failed to write to temp kubeconfig: %v", err)
 	}
-	tmpKubeconfig.Close()
+	if err := tmpKubeconfig.Close(); err != nil {
+		t.Fatalf("Failed to close temp kubeconfig: %v", err)
+	}
 
 	tests := []struct {
 		name        string
