@@ -20,6 +20,37 @@ kubectl krew install meshsync-snapshot
 2. Make it executable: `chmod +x kubectl-meshsync_snapshot`
 3. Move it to a directory in your PATH: `mv kubectl-meshsync_snapshot /usr/local/bin/`
 
+## Getting Started
+
+### Prerequisites
+
+- A running Kubernetes cluster
+- kubectl installed and configured
+- (Optional) Meshery server for importing snapshots
+
+### Quick Start
+
+Deploy MeshSync, capture a snapshot of all namespaces, and clean up:
+
+```bash
+# 1. Deploy MeshSync temporarily
+kubectl meshsync-snapshot deploy
+
+# 2. Capture a snapshot of all namespaces
+kubectl meshsync-snapshot capture -A -o my-cluster-snapshot.yaml
+
+# 3. Clean up MeshSync resources
+kubectl meshsync-snapshot cleanup
+```
+
+### Import to Meshery
+
+If you have a Meshery server running, you can import your snapshot:
+
+```bash
+kubectl meshsync-snapshot import -i my-cluster-snapshot.yaml -u https://meshery.example.com -t your-token
+```
+
 ## Usage
 
 The plugin provides the following commands:
@@ -132,9 +163,32 @@ go build -o kubectl-meshsync_snapshot cmd/kubectl-meshsync_snapshot/main.go
 ./kubectl-meshsync_snapshot help
 ```
 
+### Running tests
+
+```bash
+# Run all tests
+make test
+
+# Format code
+make fmt
+```
+
+### Creating releases
+
+For maintainers:
+
+1. Update version in Makefile
+2. Tag the repo: `git tag -a v0.1.0 -m "Release v0.1.0"`
+3. Push the tag: `git push origin v0.1.0`
+4. The GitHub Actions workflow will create a release with binaries
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Author
 

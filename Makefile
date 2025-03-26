@@ -68,15 +68,21 @@ dist: clean
 	$(MKDIR) dist
 	@for platform in $(PLATFORMS); do \
 		for arch in $(ARCHITECTURES); do \
+			echo "Building for $$platform/$$arch..."; \
 			GOOS=$$platform GOARCH=$$arch $(GOBUILD) -o dist/$(BINARY_NAME)$(if $(filter windows,$$platform),.exe,) cmd/kubectl-meshsync_snapshot/main.go; \
-			cd dist && \
+			cd dist; \
 			if [ "$$platform" = "windows" ]; then \
-				$(ZIP) -q $(BINARY_NAME)_$${platform}_$${arch}.zip $(BINARY_NAME).exe ../LICENSE && \
-				$(CHECKSUMS) $(BINARY_NAME)_$${platform}_$${arch}.zip > $(BINARY_NAME)_$${platform}_$${arch}.zip.sha256; \
+				if command -v $(ZIP) >/dev/null 2>&1; then \
+					$(ZIP) -q $(BINARY_NAME)_$${platform}_$${arch}.zip $(BINARY_NAME).exe ../LICENSE; \
+					$(CHECKSUMS) $(BINARY_NAME)_$${platform}_$${arch}.zip > $(BINARY_NAME)_$${platform}_$${arch}.zip.sha256; \
+				else \
+					echo "Warning: zip command not found, skipping Windows archive creation"; \
+					$(CHECKSUMS) $(BINARY_NAME).exe > $(BINARY_NAME)_$${platform}_$${arch}.sha256; \
+				fi; \
 			else \
-				$(TAR) -czf $(BINARY_NAME)_$${platform}_$${arch}.tar.gz $(BINARY_NAME) ../LICENSE && \
+				$(TAR) -czf $(BINARY_NAME)_$${platform}_$${arch}.tar.gz $(BINARY_NAME) -C .. LICENSE; \
 				$(CHECKSUMS) $(BINARY_NAME)_$${platform}_$${arch}.tar.gz > $(BINARY_NAME)_$${platform}_$${arch}.tar.gz.sha256; \
-			fi && \
+			fi; \
 			cd ..; \
 		done; \
 	done

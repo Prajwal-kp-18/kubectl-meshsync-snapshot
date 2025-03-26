@@ -23,6 +23,8 @@ spec:
         os: linux
         arch: amd64
     uri: https://github.com/Prajwal-kp-18/kubectl-meshsync-snapshot/releases/download/v0.1.0/kubectl-meshsync_snapshot_linux_amd64.tar.gz
+    # TODO: Replace this SHA256 with the actual hash from your release binary
+    # After building with `make dist`, check dist/kubectl-meshsync_snapshot_linux_amd64.tar.gz.sha256
     sha256: "PLACEHOLDER_LINUX_AMD64_SHA256"
     bin: kubectl-meshsync_snapshot
     files:
@@ -35,6 +37,8 @@ spec:
         os: darwin
         arch: amd64
     uri: https://github.com/Prajwal-kp-18/kubectl-meshsync-snapshot/releases/download/v0.1.0/kubectl-meshsync_snapshot_darwin_amd64.tar.gz
+    # TODO: Replace this SHA256 with the actual hash from your release binary
+    # After building with `make dist`, check dist/kubectl-meshsync_snapshot_darwin_amd64.tar.gz.sha256
     sha256: "PLACEHOLDER_DARWIN_AMD64_SHA256"
     bin: kubectl-meshsync_snapshot
     files:
@@ -47,6 +51,8 @@ spec:
         os: windows
         arch: amd64
     uri: https://github.com/Prajwal-kp-18/kubectl-meshsync-snapshot/releases/download/v0.1.0/kubectl-meshsync_snapshot_windows_amd64.zip
+    # TODO: Replace this SHA256 with the actual hash from your release binary
+    # After building with `make dist`, check dist/kubectl-meshsync_snapshot_windows_amd64.zip.sha256
     sha256: "PLACEHOLDER_WINDOWS_AMD64_SHA256"
     bin: kubectl-meshsync_snapshot.exe
     files:

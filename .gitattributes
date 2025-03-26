@@ -1,0 +1,19 @@
+# Set default behavior to automatically normalize line endings
+* text=auto
+
+# Go files should have LF line endings
+*.go text eol=lf
+
+# Shell scripts should have LF line endings
+*.sh text eol=lf
+
+# Windows batch scripts should have CRLF line endings
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Declare binary files
+*.png binary
+*.jpg binary
+*.gif binary
+*.zip binary
+*.tar.gz binary 

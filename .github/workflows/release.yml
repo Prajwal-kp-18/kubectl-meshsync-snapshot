@@ -1,0 +1,77 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.22'
+
+      - name: Run tests
+        run: make test
+
+      - name: Build binaries
+        run: make dist
+
+      - name: Get version
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Update SHA256 checksums
+        run: |
+          # Read the SHA256 values
+          LINUX_SHA256=$(cat dist/kubectl-meshsync_snapshot_linux_amd64.tar.gz.sha256 | awk '{print $1}')
+          DARWIN_SHA256=$(cat dist/kubectl-meshsync_snapshot_darwin_amd64.tar.gz.sha256 | awk '{print $1}')
+          WINDOWS_SHA256=$(cat dist/kubectl-meshsync_snapshot_windows_amd64.zip.sha256 | awk '{print $1}')
+          
+          # Create a Krew plugin manifest with real SHA256 values
+          sed -i "s/PLACEHOLDER_LINUX_AMD64_SHA256/$LINUX_SHA256/g" .krew.yaml
+          sed -i "s/PLACEHOLDER_DARWIN_AMD64_SHA256/$DARWIN_SHA256/g" .krew.yaml
+          sed -i "s/PLACEHOLDER_WINDOWS_AMD64_SHA256/$WINDOWS_SHA256/g" .krew.yaml
+          
+          # Update the version
+          sed -i "s/v0.1.0/${{ env.VERSION }}/g" .krew.yaml
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/kubectl-meshsync_snapshot_linux_amd64.tar.gz
+            dist/kubectl-meshsync_snapshot_darwin_amd64.tar.gz
+            dist/kubectl-meshsync_snapshot_windows_amd64.zip
+            .krew.yaml
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload krew-index PR instructions
+        run: |
+          echo "## Next Steps for Krew Index Submission" > krew-instructions.md
+          echo "" >> krew-instructions.md
+          echo "To submit this plugin to the Krew index, follow these steps:" >> krew-instructions.md
+          echo "" >> krew-instructions.md
+          echo "1. Fork the [krew-index](https://github.com/kubernetes-sigs/krew-index) repository" >> krew-instructions.md
+          echo "2. Create a new branch" >> krew-instructions.md
+          echo "3. Download the .krew.yaml file from this release" >> krew-instructions.md
+          echo "4. Rename it to meshsync-snapshot.yaml and place it in the plugins/ directory" >> krew-instructions.md
+          echo "5. Create a PR against the krew-index repository" >> krew-instructions.md
+          
+          gh release upload ${{ env.VERSION }} krew-instructions.md --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
