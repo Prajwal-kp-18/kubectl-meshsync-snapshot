@@ -1,0 +1,56 @@
+apiVersion: krew.googlecontainertools.github.com/v1alpha2
+kind: Plugin
+metadata:
+  name: meshsync-snapshot
+spec:
+  version: "v0.1.0"
+  homepage: https://github.com/Prajwal-kp-18/kubectl-meshsync-snapshot
+  shortDescription: Capture MeshSync snapshots for Meshery
+  description: |
+    A kubectl plugin for managing MeshSync snapshots for Meshery.
+    
+    This plugin allows you to:
+    - Deploy MeshSync temporarily to a cluster
+    - Capture cluster state snapshots
+    - Import snapshots to Meshery
+    - Clean up MeshSync resources
+    
+    It helps in efficiently gathering Kubernetes resource states
+    and integrating with Meshery for advanced service mesh management.
+  platforms:
+  - selector:
+      matchLabels:
+        os: linux
+        arch: amd64
+    uri: https://github.com/Prajwal-kp-18/kubectl-meshsync-snapshot/releases/download/v0.1.0/kubectl-meshsync_snapshot_linux_amd64.tar.gz
+    sha256: "PLACEHOLDER_LINUX_AMD64_SHA256"
+    bin: kubectl-meshsync_snapshot
+    files:
+    - from: kubectl-meshsync_snapshot
+      to: .
+    - from: LICENSE
+      to: .
+  - selector:
+      matchLabels:
+        os: darwin
+        arch: amd64
+    uri: https://github.com/Prajwal-kp-18/kubectl-meshsync-snapshot/releases/download/v0.1.0/kubectl-meshsync_snapshot_darwin_amd64.tar.gz
+    sha256: "PLACEHOLDER_DARWIN_AMD64_SHA256"
+    bin: kubectl-meshsync_snapshot
+    files:
+    - from: kubectl-meshsync_snapshot
+      to: .
+    - from: LICENSE
+      to: .
+  - selector:
+      matchLabels:
+        os: windows
+        arch: amd64
+    uri: https://github.com/Prajwal-kp-18/kubectl-meshsync-snapshot/releases/download/v0.1.0/kubectl-meshsync_snapshot_windows_amd64.zip
+    sha256: "PLACEHOLDER_WINDOWS_AMD64_SHA256"
+    bin: kubectl-meshsync_snapshot.exe
+    files:
+    - from: kubectl-meshsync_snapshot.exe
+      to: .
+    - from: LICENSE
+      to: . 
