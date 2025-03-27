@@ -85,6 +85,8 @@ dist: clean
 					$(CHECKSUMS) $(BINARY_NAME).exe > $(BINARY_NAME)_$${platform}_$${arch}.sha256; \
 				fi; \
 			else \
+				# For Linux/Darwin, list files before creating tarball to verify
+				echo "Creating tarball with:" && ls -la; \
 				$(TAR) -czf $(BINARY_NAME)_$${platform}_$${arch}.tar.gz $(BINARY_NAME) LICENSE; \
 				$(CHECKSUMS) $(BINARY_NAME)_$${platform}_$${arch}.tar.gz > $(BINARY_NAME)_$${platform}_$${arch}.tar.gz.sha256; \
 			fi; \
