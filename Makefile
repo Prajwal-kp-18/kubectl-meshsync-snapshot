@@ -70,25 +70,18 @@ deps:
 .PHONY: dist
 dist: clean
 	$(MKDIR) dist
+	cp LICENSE dist/
 	@for platform in $(PLATFORMS); do \
 		for arch in $(ARCHITECTURES); do \
 			echo "Building for $$platform/$$arch..."; \
 			GOOS=$$platform GOARCH=$$arch $(GOBUILD) -o dist/$(BINARY_NAME)$(if $(filter windows,$$platform),.exe,) cmd/kubectl-meshsync_snapshot/main.go; \
-			cp LICENSE dist/; \
 			cd dist; \
 			if [ "$$platform" = "windows" ]; then \
-				if command -v $(ZIP) >/dev/null 2>&1; then \
-					$(ZIP) -q $(BINARY_NAME)_$${platform}_$${arch}.zip $(BINARY_NAME).exe LICENSE; \
-					$(CHECKSUMS) $(BINARY_NAME)_$${platform}_$${arch}.zip > $(BINARY_NAME)_$${platform}_$${arch}.zip.sha256; \
-				else \
-					echo "Warning: zip command not found, skipping Windows archive creation"; \
-					$(CHECKSUMS) $(BINARY_NAME).exe > $(BINARY_NAME)_$${platform}_$${arch}.sha256; \
-				fi; \
+				$(ZIP) -q $(BINARY_NAME)_$${platform}_$${arch}.zip $(BINARY_NAME).exe LICENSE || echo "Warning: zip failed"; \
+				$(CHECKSUMS) $(BINARY_NAME)_$${platform}_$${arch}.zip > $(BINARY_NAME)_$${platform}_$${arch}.zip.sha256 || echo "Warning: checksum failed"; \
 			else \
-				# For Linux/Darwin, list files before creating tarball to verify
-				echo "Creating tarball with:" && ls -la; \
-				$(TAR) -czf $(BINARY_NAME)_$${platform}_$${arch}.tar.gz $(BINARY_NAME) LICENSE; \
-				$(CHECKSUMS) $(BINARY_NAME)_$${platform}_$${arch}.tar.gz > $(BINARY_NAME)_$${platform}_$${arch}.tar.gz.sha256; \
+				$(TAR) -czf $(BINARY_NAME)_$${platform}_$${arch}.tar.gz $(BINARY_NAME) LICENSE || echo "Warning: tar failed"; \
+				$(CHECKSUMS) $(BINARY_NAME)_$${platform}_$${arch}.tar.gz > $(BINARY_NAME)_$${platform}_$${arch}.tar.gz.sha256 || echo "Warning: checksum failed"; \
 			fi; \
 			cd ..; \
 		done; \
